@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Gestion des employés</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen flex">
+
+  <!-- Menu à gauche -->
+  <nav class="w-64 bg-white shadow-md p-5">
+    <h2 class="text-xl font-bold mb-8">Dashboard</h2>
+    <ul>
+      <li class="mb-4"><a href="employees.html" class="text-blue-600 hover:underline">Employés</a></li>
+      <li class="mb-4"><a href="#" class="text-gray-600 hover:underline">Salaires</a></li>
+      <li class="mb-4"><a href="#" class="text-gray-600 hover:underline">Autres</a></li>
+    </ul>
+  </nav>
+
+  <!-- Contenu principal -->
+  <main class="flex-1 p-8">
+    <h1 class="text-3xl font-semibold mb-6">Gestion des employés</h1>
+
+    <!-- Formulaire ajout employé -->
+    <form id="employeeForm" class="mb-6 bg-white p-6 rounded shadow-md max-w-xl">
+      <h2 class="text-xl mb-4">Ajouter un employé</h2>
+      <input type="text" id="full_name" placeholder="Nom complet" class="w-full mb-3 p-2 border rounded" required />
+      <input type="email" id="email" placeholder="Email" class="w-full mb-3 p-2 border rounded" required />
+      <input type="text" id="phone" placeholder="Téléphone" class="w-full mb-3 p-2 border rounded" />
+      <input type="date" id="hire_date" placeholder="Date d'embauche" class="w-full mb-3 p-2 border rounded" />
+      <input type="number" id="department_id" placeholder="ID département" class="w-full mb-3 p-2 border rounded" />
+      <input type="number" id="position_id" placeholder="ID poste" class="w-full mb-3 p-2 border rounded" />
+      <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Ajouter</button>
+    </form>
+
+    <!-- Liste des employés -->
+    <div>
+      <h2 class="text-xl mb-4">Liste des employés</h2>
+      <table class="w-full bg-white rounded shadow-md">
+        <thead class="bg-gray-200">
+          <tr>
+            <th class="p-3 text-left">ID</th>
+            <th class="p-3 text-left">Nom</th>
+            <th class="p-3 text-left">Email</th>
+            <th class="p-3 text-left">Téléphone</th>
+            <th class="p-3 text-left">Actions</th>
+          </tr>
+        </thead>
+        <tbody id="employeeTableBody">
+          <!-- Les données seront injectées ici -->
+        </tbody>
+      </table>
+    </div>
+  </main>
+
+  <script src="js/employee.js"></script>
+</body>
+</html>
