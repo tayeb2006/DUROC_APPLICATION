@@ -1,128 +1,154 @@
 <!DOCTYPE html>
 <html lang="fr">
-<head>
+  <head>
     <meta charset="UTF-8" />
-    <title>Statistiques Dashboard</title>
+    <title>Statistiques DUROC</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
+      html,
       body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+        background: #f5f5f5;
         font-family: Arial, sans-serif;
-        margin: 20px;
       }
-      h2 {
-        margin-top: 40px;
+
+      h1 {
+        text-align: center;
+        margin: 30px 0;
+        font-size: 2.5rem;
+        color: #333;
       }
+
+      .chart-container {
+        width: 90%;
+        max-width: 1200px;
+        margin: 0 auto 50px;
+        background: white;
+        padding: 30px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        border-radius: 10px;
+      }
+
       canvas {
-        max-width: 600px;
-        margin-bottom: 50px;
+        width: 100% !important;
+        height: 400px !important;
       }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <h1>Statistiques</h1>
 
-    <section>
-        <h2>Nombre d'employés par département</h2>
-        <canvas id="employeesByDepartmentChart"></canvas>
-    </section>
+      <div class="chart-container">
+        <h3>Nombre d'employés par département</h3>
+        <canvas id="barChart"></canvas>
+      </div>
 
-    <section>
-        <h2>Répartition des employés par projet</h2>
-        <canvas id="projectsDistributionChart"></canvas>
-    </section>
+      <div class="chart-container">
+        <h3>Répartition des projets</h3>
+        <canvas id="pieChart"></canvas>
+      </div>
 
-    <section>
-        <h2>Évolution moyenne des salaires par mois</h2>
-        <canvas id="averageSalaryEvolutionChart"></canvas>
-    </section>
+    <div class="chart-container">
+      <h3>Évolution des salaires (moyenne par mois)</h3>
+      <canvas id="lineChart"></canvas>
+    </div>
 
     <script>
-      async function fetchEmployeesByDepartment() {
-        const response = await fetch('/api/statistics/employees-by-department');
-        return await response.json();
-      }
+      // Données factices
+      const departments = ["RH", "IT", "Marketing", "Finance", "Production"];
+      const employeesCount = [12, 30, 8, 15, 25];
 
-      async function fetchProjectsDistribution() {
-        const response = await fetch('/api/statistics/projects-distribution');
-        return await response.json();
-      }
+      const projectsLabels = ["Projet A", "Projet B", "Projet C", "Projet D"];
+      const projectsData = [5, 10, 3, 7];
 
-      async function fetchAverageSalaryEvolution() {
-        const response = await fetch('/api/statistics/average-salary-evolution');
-        return await response.json();
-      }
+      const months = ["Jan", "Fév", "Mar", "Avr", "Mai", "Juin"];
+      const avgSalaries = [2500, 2600, 2650, 2700, 2750, 2800];
 
-      function createBarChart(ctx, labels, data, label, backgroundColor) {
-        return new Chart(ctx, {
-          type: 'bar',
-          data: {
-            labels: labels,
-            datasets: [{
-              label: label,
-              data: data,
-              backgroundColor: backgroundColor,
-            }]
+      // Bar Chart - Employés par département
+      const ctxBar = document.getElementById("barChart").getContext("2d");
+      new Chart(ctxBar, {
+        type: "bar",
+        data: {
+          labels: departments,
+          datasets: [
+            {
+              label: "Nombre d'employés",
+              data: employeesCount,
+              backgroundColor: "rgba(54, 162, 235, 0.6)",
+              borderColor: "rgba(54, 162, 235, 1)",
+              borderWidth: 1,
+            },
+          ],
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            y: {
+              beginAtZero: true,
+              ticks: {
+                precision: 0,
+              },
+            },
           },
-          options: {
-            responsive: true,
-            scales: {
-              y: {
-                beginAtZero: true,
-              }
-            }
-          }
-        });
-      }
+        },
+      });
 
-      function createLineChart(ctx, labels, data, label, borderColor) {
-        return new Chart(ctx, {
-          type: 'line',
-          data: {
-            labels: labels,
-            datasets: [{
-              label: label,
-              data: data,
+      // Pie Chart - Répartition des projets
+      const ctxPie = document.getElementById("pieChart").getContext("2d");
+      new Chart(ctxPie, {
+        type: "pie",
+        data: {
+          labels: projectsLabels,
+          datasets: [
+            {
+              label: "Projets",
+              data: projectsData,
+              backgroundColor: [
+                "rgba(255, 99, 132, 0.6)",
+                "rgba(255, 206, 86, 0.6)",
+                "rgba(75, 192, 192, 0.6)",
+                "rgba(153, 102, 255, 0.6)",
+              ],
+              borderColor: "#fff",
+              borderWidth: 1,
+            },
+          ],
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+        },
+      });
+
+      // Line Chart - Évolution des salaires
+      const ctxLine = document.getElementById("lineChart").getContext("2d");
+      new Chart(ctxLine, {
+        type: "line",
+        data: {
+          labels: months,
+          datasets: [
+            {
+              label: "Salaire moyen (€)",
+              data: avgSalaries,
               fill: false,
-              borderColor: borderColor,
-              tension: 0.1
-            }]
+              borderColor: "rgba(255, 159, 64, 1)",
+              tension: 0.1,
+            },
+          ],
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            y: {
+              beginAtZero: false,
+            },
           },
-          options: {
-            responsive: true,
-            scales: {
-              y: {
-                beginAtZero: true,
-              }
-            }
-          }
-        });
-      }
-
-      async function init() {
-        // Employés par département
-        const employeesData = await fetchEmployeesByDepartment();
-        const empLabels = employeesData.map(d => d.department);
-        const empCounts = employeesData.map(d => d.count);
-        const ctxEmp = document.getElementById('employeesByDepartmentChart').getContext('2d');
-        createBarChart(ctxEmp, empLabels, empCounts, 'Employés', 'rgba(54, 162, 235, 0.7)');
-
-        // Répartition projets
-        const projectsData = await fetchProjectsDistribution();
-        const projLabels = projectsData.map(p => p.project);
-        const projCounts = projectsData.map(p => p.count);
-        const ctxProj = document.getElementById('projectsDistributionChart').getContext('2d');
-        createBarChart(ctxProj, projLabels, projCounts, 'Employés par projet', 'rgba(255, 99, 132, 0.7)');
-
-        // Évolution moyenne salaire
-        const salaryData = await fetchAverageSalaryEvolution();
-        const salaryLabels = salaryData.map(s => s.month);
-        const avgSalaries = salaryData.map(s => s.average_salary);
-        const ctxSalary = document.getElementById('averageSalaryEvolutionChart').getContext('2d');
-        createLineChart(ctxSalary, salaryLabels, avgSalaries, 'Salaire moyen', 'rgba(75, 192, 192, 1)');
-      }
-
-      // Démarrer l'initialisation
-      init();
+        },
+      });
     </script>
-</body>
+  </body>
 </html>
