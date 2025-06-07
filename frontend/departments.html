@@ -5,11 +5,11 @@
   <title>Départements</title>
 </head>
 <body>
-  <h1>Gestion des départements</h1>
+  <h1>Gestion des Départements</h1>
 
   <form id="departmentForm">
     <input type="hidden" id="departmentId">
-    <label>Nom:</label>
+    <label>Nom :</label>
     <input type="text" id="name" required>
     <button type="submit">Enregistrer</button>
   </form>
@@ -24,7 +24,7 @@
       </tr>
     </thead>
     <tbody id="departmentTableBody">
-      <!-- Les données seront ajoutées ici -->
+      <!-- Les lignes seront insérées ici -->
     </tbody>
   </table>
 
@@ -34,24 +34,23 @@
     async function fetchDepartments() {
       try {
         const res = await fetch(apiUrl + '/');
-        if (!res.ok) throw new Error(`Erreur ${res.status}`);
-        const departments = await res.json();
+        const data = await res.json();
         const tbody = document.getElementById('departmentTableBody');
         tbody.innerHTML = '';
-        departments.forEach(dept => {
+        data.forEach(d => {
           const row = document.createElement('tr');
           row.innerHTML = `
-            <td>${dept.id}</td>
-            <td>${dept.name}</td>
+            <td>${d.id}</td>
+            <td>${d.name}</td>
             <td>
-              <button onclick="editDepartment(${dept.id})">Modifier</button>
-              <button onclick="deleteDepartment(${dept.id})">Supprimer</button>
+              <button onclick="editDepartment(${d.id})">Modifier</button>
+              <button onclick="deleteDepartment(${d.id})">Supprimer</button>
             </td>
           `;
           tbody.appendChild(row);
         });
-      } catch (error) {
-        alert('Erreur lors du chargement des départements : ' + error.message);
+      } catch (err) {
+        alert('Erreur lors du chargement : ' + err.message);
       }
     }
 
@@ -59,62 +58,47 @@
       e.preventDefault();
       const id = document.getElementById('departmentId').value;
       const name = document.getElementById('name').value.trim();
-      if (!name) {
-        alert('Le nom est obligatoire');
-        return;
-      }
-      const data = { name };
+
+      if (!name) return alert("Le nom est obligatoire.");
+
+      const method = id ? 'PUT' : 'POST';
+      const endpoint = id ? `${apiUrl}/${id}` : `${apiUrl}/`;
 
       try {
-        let res;
-        if (id) {
-          res = await fetch(`${apiUrl}/${id}`, {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(data)
-          });
-        } else {
-          res = await fetch(apiUrl + '/', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(data)
-          });
-        }
-        if (!res.ok) throw new Error(`Erreur ${res.status}`);
-
+        const res = await fetch(endpoint, {
+          method: method,
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name })
+        });
+        if (!res.ok) throw new Error("Erreur API");
         this.reset();
-        document.getElementById('departmentId').value = '';
         fetchDepartments();
-      } catch (error) {
-        alert('Erreur lors de la sauvegarde : ' + error.message);
+      } catch (err) {
+        alert("Erreur d'enregistrement : " + err.message);
       }
     });
 
     async function editDepartment(id) {
       try {
         const res = await fetch(`${apiUrl}/${id}`);
-        if (!res.ok) throw new Error(`Erreur ${res.status}`);
-        const dept = await res.json();
-        document.getElementById('departmentId').value = dept.id;
-        document.getElementById('name').value = dept.name;
-      } catch (error) {
-        alert('Erreur lors du chargement du département : ' + error.message);
+        const d = await res.json();
+        document.getElementById('departmentId').value = d.id;
+        document.getElementById('name').value = d.name;
+      } catch (err) {
+        alert("Erreur de chargement : " + err.message);
       }
     }
 
     async function deleteDepartment(id) {
-      if (confirm("Voulez-vous vraiment supprimer ce département ?")) {
-        try {
-          const res = await fetch(`${apiUrl}/${id}`, { method: 'DELETE' });
-          if (!res.ok) throw new Error(`Erreur ${res.status}`);
-          fetchDepartments();
-        } catch (error) {
-          alert('Erreur lors de la suppression : ' + error.message);
-        }
+      if (!confirm("Supprimer ce département ?")) return;
+      try {
+        await fetch(`${apiUrl}/${id}`, { method: 'DELETE' });
+        fetchDepartments();
+      } catch (err) {
+        alert("Erreur de suppression : " + err.message);
       }
     }
 
-    // Chargement initial
     fetchDepartments();
   </script>
 </body>
