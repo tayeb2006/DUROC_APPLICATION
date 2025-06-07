@@ -3,39 +3,61 @@
 <head>
   <meta charset="UTF-8">
   <title>Gestion des Salaires</title>
+  <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
-  <h1>Gestion des Salaires</h1>
+<body class="bg-gray-100 text-gray-800 font-sans p-6">
 
-  <form id="salaryForm">
-    <input type="hidden" id="salaryId">
-    <label>ID Employé:</label>
-    <input type="number" id="employee_id" required><br>
-    <label>Montant:</label>
-    <input type="number" step="0.01" id="amount" required><br>
-    <label>Date début:</label>
-    <input type="date" id="start_date" required><br>
-    <label>Date fin:</label>
-    <input type="date" id="end_date"><br>
-    <button type="submit">Enregistrer</button>
-  </form>
+  <div class="max-w-4xl mx-auto bg-white shadow-lg rounded-lg p-6">
+    <h1 class="text-2xl font-bold mb-6 text-center">Gestion des Salaires</h1>
 
-  <h2>Liste des Salaires</h2>
-  <table border="1">
-    <thead>
-      <tr>
-        <th>ID</th>
-        <th>Employé</th>
-        <th>Montant</th>
-        <th>Date début</th>
-        <th>Date fin</th>
-        <th>Actions</th>
-      </tr>
-    </thead>
-    <tbody id="salaryTableBody">
-      <!-- Les salaires seront listés ici -->
-    </tbody>
-  </table>
+    <form id="salaryForm" class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+      <input type="hidden" id="salaryId">
+
+      <div>
+        <label class="block text-sm font-medium mb-1">ID Employé</label>
+        <input type="number" id="employee_id" required class="w-full border border-gray-300 rounded p-2">
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium mb-1">Montant</label>
+        <input type="number" step="0.01" id="amount" required class="w-full border border-gray-300 rounded p-2">
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium mb-1">Date début</label>
+        <input type="date" id="start_date" required class="w-full border border-gray-300 rounded p-2">
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium mb-1">Date fin</label>
+        <input type="date" id="end_date" class="w-full border border-gray-300 rounded p-2">
+      </div>
+
+      <div class="md:col-span-2 text-right">
+        <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition">Enregistrer</button>
+      </div>
+    </form>
+
+    <h2 class="text-xl font-semibold mb-4">Liste des Salaires</h2>
+
+    <div class="overflow-x-auto">
+      <table class="min-w-full border border-gray-200 divide-y divide-gray-200">
+        <thead class="bg-gray-50">
+          <tr>
+            <th class="px-4 py-2 text-left text-sm font-semibold text-gray-700">ID</th>
+            <th class="px-4 py-2 text-left text-sm font-semibold text-gray-700">Employé</th>
+            <th class="px-4 py-2 text-left text-sm font-semibold text-gray-700">Montant</th>
+            <th class="px-4 py-2 text-left text-sm font-semibold text-gray-700">Date début</th>
+            <th class="px-4 py-2 text-left text-sm font-semibold text-gray-700">Date fin</th>
+            <th class="px-4 py-2 text-left text-sm font-semibold text-gray-700">Actions</th>
+          </tr>
+        </thead>
+        <tbody id="salaryTableBody" class="bg-white divide-y divide-gray-100">
+          <!-- Les salaires seront listés ici -->
+        </tbody>
+      </table>
+    </div>
+  </div>
 
   <script>
     const apiUrl = 'http://localhost:5000/api/salaries';
@@ -49,14 +71,14 @@
         data.forEach(s => {
           const row = document.createElement('tr');
           row.innerHTML = `
-            <td>${s.id}</td>
-            <td>${s.employee_id}</td>
-            <td>${s.amount}</td>
-            <td>${s.start_date}</td>
-            <td>${s.end_date || ''}</td>
-            <td>
-              <button onclick="editSalary(${s.id})">Modifier</button>
-              <button onclick="deleteSalary(${s.id})">Supprimer</button>
+            <td class="px-4 py-2">${s.id}</td>
+            <td class="px-4 py-2">${s.employee_id}</td>
+            <td class="px-4 py-2">${s.amount}</td>
+            <td class="px-4 py-2">${s.start_date}</td>
+            <td class="px-4 py-2">${s.end_date || ''}</td>
+            <td class="px-4 py-2 space-x-2">
+              <button onclick="editSalary(${s.id})" class="bg-yellow-400 hover:bg-yellow-500 text-white px-2 py-1 rounded">Modifier</button>
+              <button onclick="deleteSalary(${s.id})" class="bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded">Supprimer</button>
             </td>
           `;
           tbody.appendChild(row);
@@ -119,5 +141,6 @@
 
     fetchSalaries();
   </script>
+
 </body>
 </html>
