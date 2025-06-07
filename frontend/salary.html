@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Gestion des Salaires</title>
+</head>
+<body>
+  <h1>Gestion des Salaires</h1>
+
+  <form id="salaryForm">
+    <input type="hidden" id="salaryId">
+    <label>ID Employé:</label>
+    <input type="number" id="employee_id" required><br>
+    <label>Montant:</label>
+    <input type="number" step="0.01" id="amount" required><br>
+    <label>Date début:</label>
+    <input type="date" id="start_date" required><br>
+    <label>Date fin:</label>
+    <input type="date" id="end_date"><br>
+    <button type="submit">Enregistrer</button>
+  </form>
+
+  <h2>Liste des Salaires</h2>
+  <table border="1">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Employé</th>
+        <th>Montant</th>
+        <th>Date début</th>
+        <th>Date fin</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody id="salaryTableBody">
+      <!-- Les salaires seront listés ici -->
+    </tbody>
+  </table>
+
+  <script>
+    const apiUrl = 'http://localhost:5000/api/salaries';
+
+    async function fetchSalaries() {
+      try {
+        const res = await fetch(apiUrl + '/');
+        const data = await res.json();
+        const tbody = document.getElementById('salaryTableBody');
+        tbody.innerHTML = '';
+        data.forEach(s => {
+          const row = document.createElement('tr');
+          row.innerHTML = `
+            <td>${s.id}</td>
+            <td>${s.employee_id}</td>
+            <td>${s.amount}</td>
+            <td>${s.start_date}</td>
+            <td>${s.end_date || ''}</td>
+            <td>
+              <button onclick="editSalary(${s.id})">Modifier</button>
+              <button onclick="deleteSalary(${s.id})">Supprimer</button>
+            </td>
+          `;
+          tbody.appendChild(row);
+        });
+      } catch (err) {
+        alert('Erreur lors du chargement des salaires : ' + err.message);
+      }
+    }
+
+    document.getElementById('salaryForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const id = document.getElementById('salaryId').value;
+      const salaryData = {
+        employee_id: parseInt(document.getElementById('employee_id').value),
+        amount: parseFloat(document.getElementById('amount').value),
+        start_date: document.getElementById('start_date').value,
+        end_date: document.getElementById('end_date').value || null
+      };
+
+      const method = id ? 'PUT' : 'POST';
+      const endpoint = id ? `${apiUrl}/${id}` : `${apiUrl}/`;
+
+      try {
+        const res = await fetch(endpoint, {
+          method: method,
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(salaryData)
+        });
+        if (!res.ok) throw new Error("Erreur API");
+        this.reset();
+        fetchSalaries();
+      } catch (err) {
+        alert("Erreur d'enregistrement : " + err.message);
+      }
+    });
+
+    async function editSalary(id) {
+      try {
+        const res = await fetch(`${apiUrl}/${id}`);
+        const s = await res.json();
+        document.getElementById('salaryId').value = s.id;
+        document.getElementById('employee_id').value = s.employee_id;
+        document.getElementById('amount').value = s.amount;
+        document.getElementById('start_date').value = s.start_date;
+        document.getElementById('end_date').value = s.end_date || '';
+      } catch (err) {
+        alert("Erreur lors du chargement : " + err.message);
+      }
+    }
+
+    async function deleteSalary(id) {
+      if (!confirm("Supprimer ce salaire ?")) return;
+      try {
+        await fetch(`${apiUrl}/${id}`, { method: 'DELETE' });
+        fetchSalaries();
+      } catch (err) {
+        alert("Erreur lors de la suppression : " + err.message);
+      }
+    }
+
+    fetchSalaries();
+  </script>
+</body>
+</html>
