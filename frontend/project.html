@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Gestion des Projets</title>
+</head>
+<body>
+  <h1>Gestion des Projets</h1>
+
+  <form id="projectForm">
+    <input type="hidden" id="projectId">
+    <label>Nom du projet:</label>
+    <input type="text" id="name" required><br>
+    <label>Description:</label>
+    <textarea id="description"></textarea><br>
+    <button type="submit">Enregistrer</button>
+  </form>
+
+  <h2>Liste des Projets</h2>
+  <table border="1">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Nom</th>
+        <th>Description</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody id="projectTableBody">
+      <!-- Les projets s'afficheront ici -->
+    </tbody>
+  </table>
+
+  <script>
+    const apiUrl = 'http://localhost:5000/api/projects';
+
+    async function fetchProjects() {
+      try {
+        const res = await fetch(apiUrl + '/');
+        const data = await res.json();
+        const tbody = document.getElementById('projectTableBody');
+        tbody.innerHTML = '';
+        data.forEach(p => {
+          const row = document.createElement('tr');
+          row.innerHTML = `
+            <td>${p.id}</td>
+            <td>${p.name}</td>
+            <td>${p.description}</td>
+            <td>
+              <button onclick="editProject(${p.id})">Modifier</button>
+              <button onclick="deleteProject(${p.id})">Supprimer</button>
+            </td>
+          `;
+          tbody.appendChild(row);
+        });
+      } catch (err) {
+        alert("Erreur lors du chargement : " + err.message);
+      }
+    }
+
+    document.getElementById('projectForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const id = document.getElementById('projectId').value;
+      const projectData = {
+        name: document.getElementById('name').value,
+        description: document.getElementById('description').value
+      };
+      const method = id ? 'PUT' : 'POST';
+      const endpoint = id ? `${apiUrl}/${id}` : `${apiUrl}/`;
+
+      try {
+        const res = await fetch(endpoint, {
+          method: method,
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(projectData)
+        });
+        if (!res.ok) throw new Error("Erreur API");
+        this.reset();
+        fetchProjects();
+      } catch (err) {
+        alert("Erreur lors de l'enregistrement : " + err.message);
+      }
+    });
+
+    async function editProject(id) {
+      try {
+        const res = await fetch(`${apiUrl}/${id}`);
+        const p = await res.json();
+        document.getElementById('projectId').value = p.id;
+        document.getElementById('name').value = p.name;
+        document.getElementById('description').value = p.description;
+      } catch (err) {
+        alert("Erreur lors du chargement du projet : " + err.message);
+      }
+    }
+
+    async function deleteProject(id) {
+      if (!confirm("Supprimer ce projet ?")) return;
+      try {
+        await fetch(`${apiUrl}/${id}`, { method: 'DELETE' });
+        fetchProjects();
+      } catch (err) {
+        alert("Erreur lors de la suppression : " + err.message);
+      }
+    }
+
+    fetchProjects();
+  </script>
+</body>
+</html>
