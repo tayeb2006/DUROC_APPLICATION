@@ -19,13 +19,14 @@ def create_app():
     from routes.position_routes import position_bp
     from routes.project_routes import project_bp
     from routes.salary_routes import salary_bp
+    from routes.stats import stats_bp
 
     app.register_blueprint(employee_bp)
     app.register_blueprint(department_bp)
     app.register_blueprint(position_bp)
     app.register_blueprint(project_bp)
     app.register_blueprint(salary_bp)
-
+    app.register_blueprint(stats_bp)
     return app
 
 app = create_app()
