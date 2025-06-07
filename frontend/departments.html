@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Départements</title>
+</head>
+<body>
+  <h1>Gestion des départements</h1>
+
+  <form id="departmentForm">
+    <input type="hidden" id="departmentId">
+    <label>Nom:</label>
+    <input type="text" id="name" required>
+    <button type="submit">Enregistrer</button>
+  </form>
+
+  <h2>Liste des départements</h2>
+  <table border="1">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Nom</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody id="departmentTableBody">
+      <!-- Les données seront ajoutées ici -->
+    </tbody>
+  </table>
+
+  <script>
+    const apiUrl = 'http://localhost:5000/api/departments';
+
+    async function fetchDepartments() {
+      try {
+        const res = await fetch(apiUrl + '/');
+        if (!res.ok) throw new Error(`Erreur ${res.status}`);
+        const departments = await res.json();
+        const tbody = document.getElementById('departmentTableBody');
+        tbody.innerHTML = '';
+        departments.forEach(dept => {
+          const row = document.createElement('tr');
+          row.innerHTML = `
+            <td>${dept.id}</td>
+            <td>${dept.name}</td>
+            <td>
+              <button onclick="editDepartment(${dept.id})">Modifier</button>
+              <button onclick="deleteDepartment(${dept.id})">Supprimer</button>
+            </td>
+          `;
+          tbody.appendChild(row);
+        });
+      } catch (error) {
+        alert('Erreur lors du chargement des départements : ' + error.message);
+      }
+    }
+
+    document.getElementById('departmentForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const id = document.getElementById('departmentId').value;
+      const name = document.getElementById('name').value.trim();
+      if (!name) {
+        alert('Le nom est obligatoire');
+        return;
+      }
+      const data = { name };
+
+      try {
+        let res;
+        if (id) {
+          res = await fetch(`${apiUrl}/${id}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+          });
+        } else {
+          res = await fetch(apiUrl + '/', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+          });
+        }
+        if (!res.ok) throw new Error(`Erreur ${res.status}`);
+
+        this.reset();
+        document.getElementById('departmentId').value = '';
+        fetchDepartments();
+      } catch (error) {
+        alert('Erreur lors de la sauvegarde : ' + error.message);
+      }
+    });
+
+    async function editDepartment(id) {
+      try {
+        const res = await fetch(`${apiUrl}/${id}`);
+        if (!res.ok) throw new Error(`Erreur ${res.status}`);
+        const dept = await res.json();
+        document.getElementById('departmentId').value = dept.id;
+        document.getElementById('name').value = dept.name;
+      } catch (error) {
+        alert('Erreur lors du chargement du département : ' + error.message);
+      }
+    }
+
+    async function deleteDepartment(id) {
+      if (confirm("Voulez-vous vraiment supprimer ce département ?")) {
+        try {
+          const res = await fetch(`${apiUrl}/${id}`, { method: 'DELETE' });
+          if (!res.ok) throw new Error(`Erreur ${res.status}`);
+          fetchDepartments();
+        } catch (error) {
+          alert('Erreur lors de la suppression : ' + error.message);
+        }
+      }
+    }
+
+    // Chargement initial
+    fetchDepartments();
+  </script>
+</body>
+</html>

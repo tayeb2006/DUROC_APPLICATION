@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Gestion des salaires</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      background-color: #f2f2f2;
+    }
+
+    h1 {
+      color: #333;
+    }
+
+    form {
+      background: white;
+      padding: 15px;
+      border: 1px solid #ccc;
+      margin-bottom: 20px;
+    }
+
+    input {
+      padding: 8px;
+      margin: 5px 0;
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    button {
+      padding: 10px 15px;
+      margin-top: 10px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+    }
+
+    th, td {
+      padding: 10px;
+      border: 1px solid #ccc;
+      text-align: left;
+    }
+
+    .actions button {
+      background-color: #2196F3;
+      margin-right: 5px;
+    }
+
+    .actions .delete {
+      background-color: #f44336;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Gestion des salaires</h1>
+
+  <form id="salaryForm">
+    <label>ID Employé :</label>
+    <input type="number" id="employeeId" required>
+
+    <label>Montant (€) :</label>
+    <input type="number" id="amount" required>
+
+    <label>Date de paiement :</label>
+    <input type="date" id="paymentDate" required>
+
+    <input type="hidden" id="editIndex">
+
+    <button type="submit">Ajouter salaire</button>
+  </form>
+
+  <table>
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Employé ID</th>
+        <th>Montant (€)</th>
+        <th>Date de paiement</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody id="salaryTableBody">
+      <!-- Données dynamiques ici -->
+    </tbody>
+  </table>
+
+  <script>
+    let salaries = [];
+    let nextId = 1;
+
+    document.getElementById('salaryForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      const employeeId = document.getElementById('employeeId').value;
+      const amount = document.getElementById('amount').value;
+      const paymentDate = document.getElementById('paymentDate').value;
+      const editIndex = document.getElementById('editIndex').value;
+
+      if (editIndex === '') {
+        // Ajouter
+        salaries.push({
+          id: nextId++,
+          employeeId,
+          amount,
+          paymentDate
+        });
+      } else {
+        // Modifier
+        salaries[editIndex] = {
+          id: salaries[editIndex].id,
+          employeeId,
+          amount,
+          paymentDate
+        };
+        document.getElementById('editIndex').value = '';
+      }
+
+      this.reset();
+      displaySalaries();
+    });
+
+    function displaySalaries() {
+      const tbody = document.getElementById('salaryTableBody');
+      tbody.innerHTML = '';
+
+      salaries.forEach((salary, index) => {
+        const row = document.createElement('tr');
+
+        row.innerHTML = `
+          <td>${salary.id}</td>
+          <td>${salary.employeeId}</td>
+          <td>${salary.amount}</td>
+          <td>${salary.paymentDate}</td>
+          <td class="actions">
+            <button onclick="editSalary(${index})">Modifier</button>
+            <button class="delete" onclick="deleteSalary(${index})">Supprimer</button>
+          </td>
+        `;
+
+        tbody.appendChild(row);
+      });
+    }
+
+    function editSalary(index) {
+      const salary = salaries[index];
+      document.getElementById('employeeId').value = salary.employeeId;
+      document.getElementById('amount').value = salary.amount;
+      document.getElementById('paymentDate').value = salary.paymentDate;
+      document.getElementById('editIndex').value = index;
+    }
+
+    function deleteSalary(index) {
+      salaries.splice(index, 1);
+      displaySalaries();
+    }
+  </script>
+</body>
+</html>
