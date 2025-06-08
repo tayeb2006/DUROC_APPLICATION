@@ -94,11 +94,34 @@
     }
 
     function handleLogin() {
-      const username = document.getElementById('loginUsername').value;
-      const password = document.getElementById('loginPassword').value;
-      alert("Login avec : " + username + ", mot de passe : " + password);
-      // À connecter avec ton API backend
+  const username = document.getElementById('loginUsername').value;
+  const password = document.getElementById('loginPassword').value;
+
+  fetch('http://localhost:5000/api/auth/login', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ username, password })
+  })
+  .then(response => {
+    if (!response.ok) {
+      throw new Error('Nom d’utilisateur ou mot de passe invalide');
     }
+    return response.json();
+  })
+  .then(data => {
+    console.log('Login success:', data);
+    // Stocker le token dans localStorage/sessionStorage
+    localStorage.setItem('access_token', data.access_token);
+    // Redirection vers dashboard.html
+    window.location.href = 'dashboard.html';
+  })
+  .catch(error => {
+    alert(error.message);
+  });
+}
+
 
     function handleRegister() {
       const username = document.getElementById('registerUsername').value;
