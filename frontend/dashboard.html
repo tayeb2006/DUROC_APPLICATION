@@ -3,6 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <title>Tableau de Bord DUROC</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
   <style>
     body {
       margin: 0;
@@ -59,12 +61,24 @@
   <!-- Sidebar -->
   <div class="sidebar">
     <h2>DUROC</h2>
-    <a href="#" onclick="loadPage('statistique.html')">Statistique</a>
-    <a href="#" onclick="loadPage('departments.html')">Départements</a>
-    <a href="#" onclick="loadPage('employees.html')">Employés</a>
-    <a href="#" onclick="loadPage('project.html')">Projets</a>
-    <a href="#" onclick="loadPage('salary.html')">Salaires</a>
-    <a href="#" onclick="">logout</a>
+    <a href="#" onclick="loadPage('statistique.html')">
+    <i class="fa-solid fa-chart-column"></i> Statistique
+  </a>
+  <a href="#" onclick="loadPage('departments.html')">
+    <i class="fa-solid fa-building"></i> Départements
+  </a>
+  <a href="#" onclick="loadPage('employees.html')">
+    <i class="fa-solid fa-users"></i> Employés
+  </a>
+  <a href="#" onclick="loadPage('project.html')">
+    <i class="fa-solid fa-diagram-project"></i> Projets
+  </a>
+  <a href="#" onclick="loadPage('salary.html')">
+    <i class="fa-solid fa-money-bill-wave"></i> Salaires
+  </a>
+  <a href="Login.html" onclick="">
+    <i class="fa-solid fa-right-from-bracket"></i> Logout
+  </a>
 
   </div>
 
