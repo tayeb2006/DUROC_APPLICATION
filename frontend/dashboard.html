@@ -76,7 +76,7 @@
   <a href="#" onclick="loadPage('salary.html')">
     <i class="fa-solid fa-money-bill-wave"></i> Salaires
   </a>
-  <a href="Login.html" onclick="">
+  <a href="#" onclick="logout()">
     <i class="fa-solid fa-right-from-bracket"></i> Logout
   </a>
 
@@ -88,8 +88,20 @@
   </div>
 
   <script>
+    // Vérifier si le token existe dans localStorage
+  const token = localStorage.getItem('access_token');
+  if (!token) {
+    // Pas de token → rediriger vers la page de login
+    window.location.href = 'Login.html';
+  }
     function loadPage(page) {
       document.getElementById('mainFrame').src = page;
+    }
+
+    function logout(){
+      
+      localStorage.removeItem('access_token');
+      window.location.href = 'Login.html'; 
     }
   </script>
 </body>
