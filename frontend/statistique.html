@@ -56,6 +56,8 @@
     </div>
 
     <script>
+       const token = localStorage.getItem('access_token');
+  if (!token) {
       // Données factices
       const departments = ["RH", "IT", "Marketing", "Finance", "Production"];
       const employeesCount = [12, 30, 8, 15, 25];
@@ -149,6 +151,8 @@
           },
         },
       });
+      window.location.href = '404.html'; 
+  }
     </script>
   </body>
 </html>

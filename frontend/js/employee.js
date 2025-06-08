@@ -1,3 +1,6 @@
+const token = localStorage.getItem('access_token');
+  if (!token) {
+    
 const apiUrl = 'http://localhost:5000/api/employees';
 
 let editId = null; // null = mode création, sinon mode édition
@@ -100,3 +103,5 @@ document.getElementById('employeeForm').addEventListener('submit', async (e) => 
 
 // Chargement initial
 fetchEmployees();
+window.location.href = '404.html'; 
+  }

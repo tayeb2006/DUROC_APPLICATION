@@ -60,6 +60,8 @@
   </div>
 
   <script>
+    const token = localStorage.getItem('access_token');
+  if (!token) {
     const apiUrl = 'http://localhost:5000/api/salaries';
 
     async function fetchSalaries() {
@@ -140,6 +142,8 @@
     }
 
     fetchSalaries();
+    window.location.href = '404.html'; 
+  }
   </script>
 
 </body>

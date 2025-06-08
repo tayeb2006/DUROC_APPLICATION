@@ -50,6 +50,8 @@
   </div>
 
   <script>
+     const token = localStorage.getItem('access_token');
+  if (!token) {
     const apiUrl = 'http://localhost:5000/api/projects';
 
     async function fetchProjects() {
@@ -123,6 +125,8 @@
     }
 
     fetchProjects();
+    window.location.href = '404.html'; 
+  }
   </script>
 
 </body>
