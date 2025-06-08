@@ -50,84 +50,86 @@
   </div>
 
   <script>
-     const token = localStorage.getItem('access_token');
-  if (!token) {
-    const apiUrl = 'http://localhost:5000/api/projects';
+    const token = localStorage.getItem('access_token');
+if (!token) {
+  window.location.href = '404.html'; 
+} else {
+  const apiUrl = 'http://localhost:5000/api/projects';
 
-    async function fetchProjects() {
-      try {
-        const res = await fetch(apiUrl + '/');
-        const data = await res.json();
-        const tbody = document.getElementById('projectTableBody');
-        tbody.innerHTML = '';
-        data.forEach(p => {
-          const row = document.createElement('tr');
-          row.innerHTML = `
-            <td class="px-4 py-2">${p.id}</td>
-            <td class="px-4 py-2">${p.name}</td>
-            <td class="px-4 py-2">${p.description}</td>
-            <td class="px-4 py-2 space-x-2">
-              <button onclick="editProject(${p.id})" class="bg-yellow-400 hover:bg-yellow-500 text-white px-3 py-1 rounded">Modifier</button>
-              <button onclick="deleteProject(${p.id})" class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded">Supprimer</button>
-            </td>
-          `;
-          tbody.appendChild(row);
-        });
-      } catch (err) {
-        alert("Erreur lors du chargement : " + err.message);
-      }
+  async function fetchProjects() {
+    try {
+      const res = await fetch(apiUrl + '/');
+      const data = await res.json();
+      const tbody = document.getElementById('projectTableBody');
+      tbody.innerHTML = '';
+      data.forEach(p => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td class="px-4 py-2">${p.id}</td>
+          <td class="px-4 py-2">${p.name}</td>
+          <td class="px-4 py-2">${p.description}</td>
+          <td class="px-4 py-2 space-x-2">
+            <button onclick="editProject(${p.id})" class="bg-yellow-400 hover:bg-yellow-500 text-white px-3 py-1 rounded">Modifier</button>
+            <button onclick="deleteProject(${p.id})" class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded">Supprimer</button>
+          </td>
+        `;
+        tbody.appendChild(row);
+      });
+    } catch (err) {
+      alert("Erreur lors du chargement : " + err.message);
     }
-
-    document.getElementById('projectForm').addEventListener('submit', async function(e) {
-      e.preventDefault();
-      const id = document.getElementById('projectId').value;
-      const projectData = {
-        name: document.getElementById('name').value,
-        description: document.getElementById('description').value
-      };
-      const method = id ? 'PUT' : 'POST';
-      const endpoint = id ? `${apiUrl}/${id}` : `${apiUrl}/`;
-
-      try {
-        const res = await fetch(endpoint, {
-          method: method,
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(projectData)
-        });
-        if (!res.ok) throw new Error("Erreur API");
-        this.reset();
-        fetchProjects();
-      } catch (err) {
-        alert("Erreur lors de l'enregistrement : " + err.message);
-      }
-    });
-
-    async function editProject(id) {
-      try {
-        const res = await fetch(`${apiUrl}/${id}`);
-        const p = await res.json();
-        document.getElementById('projectId').value = p.id;
-        document.getElementById('name').value = p.name;
-        document.getElementById('description').value = p.description;
-      } catch (err) {
-        alert("Erreur lors du chargement du projet : " + err.message);
-      }
-    }
-
-    async function deleteProject(id) {
-      if (!confirm("Supprimer ce projet ?")) return;
-      try {
-        await fetch(`${apiUrl}/${id}`, { method: 'DELETE' });
-        fetchProjects();
-      } catch (err) {
-        alert("Erreur lors de la suppression : " + err.message);
-      }
-    }
-
-    fetchProjects();
-    window.location.href = '404.html'; 
   }
-  </script>
 
+  document.getElementById('projectForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const id = document.getElementById('projectId').value;
+    const projectData = {
+      name: document.getElementById('name').value,
+      description: document.getElementById('description').value
+    };
+    const method = id ? 'PUT' : 'POST';
+    const endpoint = id ? `${apiUrl}/${id}` : `${apiUrl}/`;
+
+    try {
+      const res = await fetch(endpoint, {
+        method: method,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(projectData)
+      });
+      if (!res.ok) throw new Error("Erreur API");
+      this.reset();
+      fetchProjects();
+    } catch (err) {
+      alert("Erreur lors de l'enregistrement : " + err.message);
+    }
+  });
+
+  window.editProject = async function(id) {
+  try {
+    const res = await fetch(`${apiUrl}/${id}`);
+    const p = await res.json();
+    document.getElementById('projectId').value = p.id;
+    document.getElementById('name').value = p.name;
+    document.getElementById('description').value = p.description;
+  } catch (err) {
+    alert("Erreur lors du chargement du projet : " + err.message);
+  }
+};
+
+window.deleteProject = async function(id) {
+  if (!confirm("Supprimer ce projet ?")) return;
+  try {
+    await fetch(`${apiUrl}/${id}`, { method: 'DELETE' });
+    fetchProjects();
+  } catch (err) {
+    alert("Erreur lors de la suppression : " + err.message);
+  }
+};
+
+
+  fetchProjects();
+}
+
+  </script>
 </body>
 </html>

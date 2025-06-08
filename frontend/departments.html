@@ -43,9 +43,13 @@
     </div>
   </div>
 
-  <script>
-     const token = localStorage.getItem('access_token');
+<script>
+  const token = localStorage.getItem('access_token');
   if (!token) {
+    // Rediriger immédiatement
+    window.location.href = '404.html';
+  } else {
+    // Le token existe → exécuter le code
     const apiUrl = 'http://localhost:5000/api/departments';
 
     async function fetchDepartments() {
@@ -94,8 +98,7 @@
         alert("Erreur d'enregistrement : " + err.message);
       }
     });
-
-    async function editDepartment(id) {
+window.editDepartment = async function(id){
       try {
         const res = await fetch(`${apiUrl}/${id}`);
         const d = await res.json();
@@ -105,8 +108,8 @@
         alert("Erreur de chargement : " + err.message);
       }
     }
+window.deleteDepartment = async function(id){
 
-    async function deleteDepartment(id) {
       if (!confirm("Supprimer ce département ?")) return;
       try {
         await fetch(`${apiUrl}/${id}`, { method: 'DELETE' });
@@ -116,9 +119,10 @@
       }
     }
 
+    // Charger les départements au démarrage
     fetchDepartments();
-    window.location.href = '404.html'; 
   }
-  </script>
+</script>
+
 </body>
 </html>

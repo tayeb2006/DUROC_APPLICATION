@@ -1,69 +1,124 @@
 <!DOCTYPE html>
 <html lang="fr">
-<head>
-  <meta charset="UTF-8">
-  <title>Gestion des Salaires</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="bg-gray-100 text-gray-800 font-sans p-6">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Gestion des Salaires</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body class="bg-gray-100 text-gray-800 font-sans p-6">
+    <div class="max-w-4xl mx-auto bg-white shadow-lg rounded-lg p-6">
+      <h1 class="text-2xl font-bold mb-6 text-center">Gestion des Salaires</h1>
 
-  <div class="max-w-4xl mx-auto bg-white shadow-lg rounded-lg p-6">
-    <h1 class="text-2xl font-bold mb-6 text-center">Gestion des Salaires</h1>
+      <form id="salaryForm" class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+        <input type="hidden" id="salaryId" />
 
-    <form id="salaryForm" class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
-      <input type="hidden" id="salaryId">
+        <div>
+          <label class="block text-sm font-medium mb-1">ID Employé</label>
+          <input
+            type="number"
+            id="employee_id"
+            required
+            class="w-full border border-gray-300 rounded p-2"
+          />
+        </div>
 
-      <div>
-        <label class="block text-sm font-medium mb-1">ID Employé</label>
-        <input type="number" id="employee_id" required class="w-full border border-gray-300 rounded p-2">
+        <div>
+          <label class="block text-sm font-medium mb-1">Montant</label>
+          <input
+            type="number"
+            step="0.01"
+            id="amount"
+            required
+            class="w-full border border-gray-300 rounded p-2"
+          />
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium mb-1">Date début</label>
+          <input
+            type="date"
+            id="start_date"
+            required
+            class="w-full border border-gray-300 rounded p-2"
+          />
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium mb-1">Date fin</label>
+          <input
+            type="date"
+            id="end_date"
+            class="w-full border border-gray-300 rounded p-2"
+          />
+        </div>
+
+        <div class="md:col-span-2 text-right">
+          <button
+            type="submit"
+            class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
+          >
+            Enregistrer
+          </button>
+        </div>
+      </form>
+
+      <h2 class="text-xl font-semibold mb-4">Liste des Salaires</h2>
+
+      <div class="overflow-x-auto">
+        <table
+          class="min-w-full border border-gray-200 divide-y divide-gray-200"
+        >
+          <thead class="bg-gray-50">
+            <tr>
+              <th
+                class="px-4 py-2 text-left text-sm font-semibold text-gray-700"
+              >
+                ID
+              </th>
+              <th
+                class="px-4 py-2 text-left text-sm font-semibold text-gray-700"
+              >
+                Employé
+              </th>
+              <th
+                class="px-4 py-2 text-left text-sm font-semibold text-gray-700"
+              >
+                Montant
+              </th>
+              <th
+                class="px-4 py-2 text-left text-sm font-semibold text-gray-700"
+              >
+                Date début
+              </th>
+              <th
+                class="px-4 py-2 text-left text-sm font-semibold text-gray-700"
+              >
+                Date fin
+              </th>
+              <th
+                class="px-4 py-2 text-left text-sm font-semibold text-gray-700"
+              >
+                Actions
+              </th>
+            </tr>
+          </thead>
+          <tbody id="salaryTableBody" class="bg-white divide-y divide-gray-100">
+            <!-- Les salaires seront listés ici -->
+          </tbody>
+        </table>
       </div>
-
-      <div>
-        <label class="block text-sm font-medium mb-1">Montant</label>
-        <input type="number" step="0.01" id="amount" required class="w-full border border-gray-300 rounded p-2">
-      </div>
-
-      <div>
-        <label class="block text-sm font-medium mb-1">Date début</label>
-        <input type="date" id="start_date" required class="w-full border border-gray-300 rounded p-2">
-      </div>
-
-      <div>
-        <label class="block text-sm font-medium mb-1">Date fin</label>
-        <input type="date" id="end_date" class="w-full border border-gray-300 rounded p-2">
-      </div>
-
-      <div class="md:col-span-2 text-right">
-        <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition">Enregistrer</button>
-      </div>
-    </form>
-
-    <h2 class="text-xl font-semibold mb-4">Liste des Salaires</h2>
-
-    <div class="overflow-x-auto">
-      <table class="min-w-full border border-gray-200 divide-y divide-gray-200">
-        <thead class="bg-gray-50">
-          <tr>
-            <th class="px-4 py-2 text-left text-sm font-semibold text-gray-700">ID</th>
-            <th class="px-4 py-2 text-left text-sm font-semibold text-gray-700">Employé</th>
-            <th class="px-4 py-2 text-left text-sm font-semibold text-gray-700">Montant</th>
-            <th class="px-4 py-2 text-left text-sm font-semibold text-gray-700">Date début</th>
-            <th class="px-4 py-2 text-left text-sm font-semibold text-gray-700">Date fin</th>
-            <th class="px-4 py-2 text-left text-sm font-semibold text-gray-700">Actions</th>
-          </tr>
-        </thead>
-        <tbody id="salaryTableBody" class="bg-white divide-y divide-gray-100">
-          <!-- Les salaires seront listés ici -->
-        </tbody>
-      </table>
     </div>
-  </div>
 
-  <script>
-    const token = localStorage.getItem('access_token');
+    <script>
+  const token = localStorage.getItem('access_token');
+
+  // Rediriger si le token n'existe pas
   if (!token) {
+    window.location.href = '404.html';
+  } else {
     const apiUrl = 'http://localhost:5000/api/salaries';
 
+    // Fonction pour afficher les salaires dans le tableau
     async function fetchSalaries() {
       try {
         const res = await fetch(apiUrl + '/');
@@ -90,7 +145,8 @@
       }
     }
 
-    document.getElementById('salaryForm').addEventListener('submit', async function(e) {
+    // Soumission du formulaire (ajout ou modification)
+    document.getElementById('salaryForm').addEventListener('submit', async function (e) {
       e.preventDefault();
       const id = document.getElementById('salaryId').value;
       const salaryData = {
@@ -106,10 +162,14 @@
       try {
         const res = await fetch(endpoint, {
           method: method,
-          headers: { 'Content-Type': 'application/json' },
+          headers: {
+            'Content-Type': 'application/json'
+          },
           body: JSON.stringify(salaryData)
         });
+
         if (!res.ok) throw new Error("Erreur API");
+
         this.reset();
         fetchSalaries();
       } catch (err) {
@@ -117,7 +177,8 @@
       }
     });
 
-    async function editSalary(id) {
+    // Fonction de modification (remplir le formulaire)
+    window.editSalary = async function (id) {
       try {
         const res = await fetch(`${apiUrl}/${id}`);
         const s = await res.json();
@@ -127,24 +188,31 @@
         document.getElementById('start_date').value = s.start_date;
         document.getElementById('end_date').value = s.end_date || '';
       } catch (err) {
-        alert("Erreur lors du chargement : " + err.message);
+        alert("Erreur lors du chargement du salaire : " + err.message);
       }
-    }
+    };
 
-    async function deleteSalary(id) {
+    // Fonction de suppression
+    window.deleteSalary = async function (id) {
       if (!confirm("Supprimer ce salaire ?")) return;
+
       try {
-        await fetch(`${apiUrl}/${id}`, { method: 'DELETE' });
+        const res = await fetch(`${apiUrl}/${id}`, {
+          method: 'DELETE'
+        });
+
+        if (!res.ok) throw new Error("Erreur lors de la suppression");
+
         fetchSalaries();
       } catch (err) {
         alert("Erreur lors de la suppression : " + err.message);
       }
-    }
+    };
 
+    // Chargement initial
     fetchSalaries();
-    window.location.href = '404.html'; 
   }
-  </script>
+</script>
 
-</body>
+  </body>
 </html>
